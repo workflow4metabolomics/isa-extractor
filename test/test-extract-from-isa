@@ -1,9 +1,20 @@
 #!/bin/bash
 
+# Constants {{{1
+################################################################
+
+PROG_NAME=$(basename $0)
+PROG_PATH=$(dirname $0)
+RES_PATH=$PROG_PATH/res
+
+# MAIN {{{1
+################################################################
+
 # Test MTBLS291
-rm -rf mtbls291-mzmls
-../extract-from-isa -i res/MTBLS291_subset -o mtbls291-mzmls -e mzML
-n_files=$(ls -1 mtbls291-mzmls/* | wc -l)
-n_mzml_files=$(ls -1 mtbls291-mzmls/*.mzML | wc -l)
+output_path="$PROG_PATH/mtbls291-mzmls"
+rm -rf "$output_path"
+"$PROG_PATH/../extract-from-isa" -i "$PROG_PATH/res/MTBLS291_subset" -o "$output_path" -e mzML
+n_files=$(ls -1 "$output_path"/* | wc -l)
+n_mzml_files=$(ls -1 "$output_path"/*.mzML | wc -l)
 [[ $n_files -eq $n_mzml_files ]] || exit 1
 [[ $n_files -eq 2 ]] || exit 2
