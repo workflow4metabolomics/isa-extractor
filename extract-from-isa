@@ -1,0 +1,97 @@
+#!/bin/bash
+
+# Global variables {{{1
+################################################################
+
+ASPERA=
+ASSAY_FILE=
+DEBUG=0
+HTML=
+MATRIX_OUTPUT=
+METADATA_ONLY=
+OUTPUT=
+PRIVATE=
+QUIET=0
+SAMPLE_NA_FILTERING=
+SAMPLE_OUTPUT=
+SKIP_DOWNLOAD=
+TOKEN=
+VARIABLE_NA_FILTERING=
+VARIABLE_OUTPUT=
+W4M_ALL_ASSAYS=
+W4M_ALL_ASSAYS_DIR=
+W4M_OUTPUT=
+
+# Print help {{{1
+################################################################
+
+function print_help {
+	echo "Usage: $PROG_NAME -i <ISA_DIR> -e <EXT> -o <OUTPUT_DIR>"
+	echo
+	echo "Retrieves a study from Metabolights database."
+	echo "By default it uses the ftp server, but with -a option you can ask for using aspera server (you will need the aspera client ascp to be installed)."
+	echo
+	echo "Options:"
+	echo "   -e, --ext             EXT   The extension of the files to find."
+	echo "   -h, --help                  Print this help message."
+	echo "   -i, --input           DIR   Input directory containing ISA archive."
+	echo "   -o, --output          DIR   Set the output directory to use."
+}
+
+# Error {{{1
+################################################################
+
+function error {
+
+	local msg=$1
+
+	echo "ERROR: $msg" >&2
+
+	exit 1
+}
+
+# Read args {{{1
+################################################################
+
+function read_args {
+
+	local args="$*" # save arguments for debugging purpose
+	
+	# Read options
+	while true ; do
+		shift_count=1
+		case $1 in
+			-e|--ext)               EXT="$2" ; shift_count=2 ;;
+			-i|--input)             INPUT_DIR="$2" ; shift_count=2 ;;
+			-h|--help)              print_help ; exit 0 ;;
+			-o|--output)            OUTPUT_DIR="$2" ; shift_count=2 ;;
+			-) error "Illegal option $1." ;;
+			--) error "Illegal option $1." ;;
+			--*) error "Illegal option $1." ;;
+			-?) error "Unknown option $1." ;;
+			-[^-]*) split_opt=$(echo $1 | sed 's/^-//' | sed 's/\([a-zA-Z]\)/ -\1/g') ; set -- $1$split_opt "${@:2}" ;;
+			*) break
+		esac
+		shift $shift_count
+	done
+	shift $((OPTIND - 1))
+
+	# Check input params
+	[[ $# -eq 0 ]] || error "No remaining arguments are allowed."
+	[[ -n $EXT ]] || error "You must specify the extension of the files you are looking for, with the -e option."
+	[[ -n $INPUT_DIR ]] || error "You must specific an input directory, using -i option."
+	[[ -d $INPUT_DIR ]] || error "\"$INPUT_DIR\" is not a valid directory."
+	[[ -n $OUTPUT_DIR ]] || error "You must specific an output directory, using -i option."
+	[[ ! -e $OUTPUT_DIR ]] || error "\"$OUTPUT_DIR\" already exists."
+}
+
+# MAIN {{{1
+################################################################
+
+read_args "$@"
+
+# Create output directory
+mkdir -p "$OUTPUT_DIR"
+
+# Extract files
+find "$INPUT_DIR" -iname "*.$EXT" | xargs -I % cp % "$OUTPUT_DIR"
