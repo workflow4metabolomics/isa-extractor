@@ -1,5 +1,5 @@
 <!-- vi: se fdm=marker : -->
-<tool id="isa2mzl" name="ISA to mzML" version="1.1.0">
+<tool id="isa2mzml" name="ISA to mzML" version="1.1.0">
 
 	<description>Extract mzML files from an ISA dataset and output a collection of mzML dataset.</description>
 
@@ -42,18 +42,18 @@ ISA to mzML
 
 Extract mzML files contained inside an ISA archive.
 
-------
-Inputs
-------
+-----
+Input
+-----
 
 ISA dataset
 ===========
 
 The ISA-Tab dataset from which to extract the files.
 
--------
-Outputs
--------
+------
+Output
+------
 
 The output is a collection of mzML files.
 
