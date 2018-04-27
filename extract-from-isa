@@ -1,26 +1,19 @@
 #!/bin/bash
+# vi: fdm=marker
+
+# Constants {{{1
+################################################################
+
+PROG_NAME=$(basename $0)
+PROG_PATH=$(dirname $0)
 
 # Global variables {{{1
 ################################################################
 
-ASPERA=
-ASSAY_FILE=
 DEBUG=0
-HTML=
-MATRIX_OUTPUT=
-METADATA_ONLY=
-OUTPUT=
-PRIVATE=
-QUIET=0
-SAMPLE_NA_FILTERING=
-SAMPLE_OUTPUT=
-SKIP_DOWNLOAD=
-TOKEN=
-VARIABLE_NA_FILTERING=
-VARIABLE_OUTPUT=
-W4M_ALL_ASSAYS=
-W4M_ALL_ASSAYS_DIR=
-W4M_OUTPUT=
+EXT=
+INPUT_DIR=
+OUTPUT_DIR=
 
 # Print help {{{1
 ################################################################
@@ -50,6 +43,17 @@ function error {
 	exit 1
 }
 
+# Print debug msg {{{1
+################################################################
+
+function print_debug_msg {
+
+	local dbglvl=$1
+	local dbgmsg=$2
+
+	[ $DEBUG -ge $dbglvl ] && echo "[DEBUG] $dbgmsg" >&2
+}
+
 # Read args {{{1
 ################################################################
 
@@ -62,8 +66,9 @@ function read_args {
 		shift_count=1
 		case $1 in
 			-e|--ext)               EXT="$2" ; shift_count=2 ;;
-			-i|--input)             INPUT_DIR="$2" ; shift_count=2 ;;
+			-g|--debug)             DEBUG=$((DEBUG + 1)) ;;
 			-h|--help)              print_help ; exit 0 ;;
+			-i|--input)             INPUT_DIR="$2" ; shift_count=2 ;;
 			-o|--output)            OUTPUT_DIR="$2" ; shift_count=2 ;;
 			-) error "Illegal option $1." ;;
 			--) error "Illegal option $1." ;;
@@ -76,13 +81,16 @@ function read_args {
 	done
 	shift $((OPTIND - 1))
 
+	# Debug
+	print_debug_msg 1 "Arguments are : $args"
+
 	# Check input params
 	[[ $# -eq 0 ]] || error "No remaining arguments are allowed."
-	[[ -n $EXT ]] || error "You must specify the extension of the files you are looking for, with the -e option."
-	[[ -n $INPUT_DIR ]] || error "You must specific an input directory, using -i option."
+	[[ -n $INPUT_DIR ]] || error "You must specify an input directory, using -i option."
 	[[ -d $INPUT_DIR ]] || error "\"$INPUT_DIR\" is not a valid directory."
-	[[ -n $OUTPUT_DIR ]] || error "You must specific an output directory, using -i option."
+	[[ -n $OUTPUT_DIR ]] || error "You must specify an output directory, using -o option."
 	[[ ! -e $OUTPUT_DIR ]] || error "\"$OUTPUT_DIR\" already exists."
+	[[ -n $EXT ]] || error "You must specify the extension of the files you are looking for, with the -e option."
 }
 
 # MAIN {{{1
@@ -91,7 +99,23 @@ function read_args {
 read_args "$@"
 
 # Create output directory
+print_debug_msg 1 "Create output directory \"$OUTPUT_DIR\"."
 mkdir -p "$OUTPUT_DIR"
 
+# Find files to extract
+print_debug_msg 1 "Find \"$EXT\" files to extract in \"$INPUT_DIR\"."
+files_to_extract=$(mktemp -t tmp.XXXXXX)
+find "$INPUT_DIR" -iname "*.$EXT" >files_to_extract
+print_debug_msg 1 "Files to extract:"
+if [[ $DEBUG -ge 1 ]] ; then
+	cat files_to_extract >&2
+fi
+
 # Extract files
-find "$INPUT_DIR" -iname "*.$EXT" | xargs -I % cp % "$OUTPUT_DIR"
+print_debug_msg 1 "Copy \"$EXT\" files to extract to \"$OUTPUT_DIR\"."
+xargs -I % cp % "$OUTPUT_DIR" <files_to_extract
+rm files_to_extract
+print_debug_msg 1 "Files extracted:"
+if [[ $DEBUG -ge 1 ]] ; then
+	ls -1 "$OUTPUT_DIR" >&2
+fi

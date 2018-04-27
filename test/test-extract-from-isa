@@ -13,7 +13,7 @@ RES_PATH=$PROG_PATH/res
 # Test MTBLS291
 output_path="$PROG_PATH/mtbls291-mzmls"
 rm -rf "$output_path"
-"$PROG_PATH/../extract-from-isa" -i "$PROG_PATH/res/MTBLS291_subset" -o "$output_path" -e mzML
+"$PROG_PATH/../extract-from-isa" -g -i "$PROG_PATH/res/MTBLS291_subset" -o "$output_path" -e mzML
 n_files=$(ls -1 "$output_path"/* | wc -l)
 n_mzml_files=$(ls -1 "$output_path"/*.mzML | wc -l)
 [[ $n_files -eq $n_mzml_files ]] || exit 1
