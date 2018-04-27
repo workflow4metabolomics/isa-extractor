@@ -49,4 +49,7 @@ function test_study {
 test_study empty_study mzML 0
 test_study fake_mzml_study mzML 1
 test_study fake_mzdata_study mzData 1
+test_study fake_mzxml_study mzXML 1
+test_study fake_nmrml_study nmrML 1
+test_study fake_netcdf_study CDF 1
 test_study fake_case_insensitive_mzml_study mzML 3
