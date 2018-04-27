@@ -2,6 +2,6 @@ all:
 	./test-extract-from-isa
 
 clean:
-	$(RM) -r mtbls291-mzmls
+	$(RM) -r *_extract
 
 .PHONY: all clean
