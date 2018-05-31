@@ -21,8 +21,7 @@ OUTPUT_DIR=
 function print_help {
 	echo "Usage: $PROG_NAME -i <ISA_DIR> -e <EXT> -o <OUTPUT_DIR>"
 	echo
-	echo "Retrieves a study from Metabolights database."
-	echo "By default it uses the ftp server, but with -a option you can ask for using aspera server (you will need the aspera client ascp to be installed)."
+	echo "Extract files with a given extension from ISA-Tab archives into a collection."
 	echo
 	echo "Options:"
 	echo "   -e, --ext             EXT   The extension of the files to find."
