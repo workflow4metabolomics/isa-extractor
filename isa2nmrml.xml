@@ -26,7 +26,7 @@
 
     <outputs>
 		<collection name="nmrML" type="list" label="nmrML files">
-			<discover_datasets pattern="__name_and_ext__" directory="nmrML" format="nmrml"/>
+			<discover_datasets pattern="(?P&lt;designation&gt;.+)\.[nN][mM][rR][mM][lL]$" directory="nmrML" format="nmrml"/>
 		</collection>
 	</outputs>
 

@@ -26,7 +26,7 @@
 
     <outputs>
 		<collection name="mzData" type="list" label="mzData files">
-			<discover_datasets pattern="__name_and_ext__" directory="mzData" format="mzdata"/>
+			<discover_datasets pattern="(?P&lt;designation&gt;.+)\.[mM][zZ][dD][aA][tT][aA]$" directory="mzData" format="mzdata"/>
 		</collection>
 	</outputs>
 
