@@ -6,6 +6,8 @@
 
 PROG_NAME=$(basename $0)
 PROG_PATH=$(dirname $0)
+YES=yes
+NO=no
 
 # Global variables {{{1
 ################################################################
@@ -14,6 +16,7 @@ DEBUG=0
 EXT=
 INPUT_DIR=
 OUTPUT_DIR=
+SYMLINK=$NO
 
 # Print help {{{1
 ################################################################
@@ -28,6 +31,7 @@ function print_help {
 	echo "   -h, --help                  Print this help message."
 	echo "   -i, --input           DIR   Input directory containing ISA archive."
 	echo "   -o, --output          DIR   Set the output directory to use."
+	echo "   -s, --symlink               Create symbolic links instead of copying files."
 }
 
 # Error {{{1
@@ -69,6 +73,7 @@ function read_args {
 			-h|--help)              print_help ; exit 0 ;;
 			-i|--input)             INPUT_DIR="$2" ; shift_count=2 ;;
 			-o|--output)            OUTPUT_DIR="$2" ; shift_count=2 ;;
+			-s|--symlink)           SYMLINK=$YES ;;
 			-) error "Illegal option $1." ;;
 			--) error "Illegal option $1." ;;
 			--*) error "Illegal option $1." ;;
@@ -104,15 +109,20 @@ mkdir -p "$OUTPUT_DIR"
 # Find files to extract
 print_debug_msg 1 "Find \"$EXT\" files to extract in \"$INPUT_DIR\"."
 files_to_extract=$(mktemp -t tmp.XXXXXX)
-find "$INPUT_DIR" -iname "*.$EXT" >files_to_extract
+find "$(realpath $INPUT_DIR)" -iname "*.$EXT" >files_to_extract
 print_debug_msg 1 "Files to extract:"
 if [[ $DEBUG -ge 1 ]] ; then
 	cat files_to_extract >&2
 fi
 
 # Extract files
-print_debug_msg 1 "Copy \"$EXT\" files to extract to \"$OUTPUT_DIR\"."
-xargs -I % cp % "$OUTPUT_DIR" <files_to_extract
+if [[ $SYMLINK == $YES ]] ; then
+	print_debug_msg 1 "Create symbolic links of all \"$EXT\" files to extract into \"$OUTPUT_DIR\"."
+	xargs -I % ln -s % "$OUTPUT_DIR" <files_to_extract
+else
+	print_debug_msg 1 "Copy all \"$EXT\" files to extract to \"$OUTPUT_DIR\"."
+	xargs -I % cp % "$OUTPUT_DIR" <files_to_extract
+fi
 rm files_to_extract
 print_debug_msg 1 "Files extracted:"
 if [[ $DEBUG -ge 1 ]] ; then
