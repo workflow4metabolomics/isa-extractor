@@ -3,7 +3,7 @@ dist: bionic
 notifications:
  email:
   recipients:
-   - pk.roger@icloud.com
+   - pierrick.roger@cea.fr
 
 script:
     - make test
