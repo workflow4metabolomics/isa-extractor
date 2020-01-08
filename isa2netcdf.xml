@@ -31,6 +31,14 @@
 	</outputs>
 
 	<!-- Tests {{{1 -->
+	<tests>
+		<test>
+			<param name="isa" value="netcdf_study.zip" ftype="isa-tab"/>
+			<output_collection name="netCDF" type="list" count="1">
+				<element name="empty" file="netcdf_study_output/empty.CDF" ftype="netcdf"/>
+			</output_collection>
+		</test>
+	</tests>
 
 	<!-- Help {{{1 -->
     <help>

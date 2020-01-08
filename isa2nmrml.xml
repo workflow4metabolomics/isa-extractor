@@ -31,6 +31,14 @@
 	</outputs>
 
 	<!-- Tests {{{1 -->
+	<tests>
+		<test>
+			<param name="isa" value="nmrml_study.zip" ftype="isa-tab"/>
+			<output_collection name="nmrML" type="list" count="1">
+				<element name="empty" file="nmrml_study_output/empty.nmrML" ftype="nmrml"/>
+			</output_collection>
+		</test>
+	</tests>
 
 	<!-- Help {{{1 -->
     <help>

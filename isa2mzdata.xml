@@ -31,6 +31,14 @@
 	</outputs>
 
 	<!-- Tests {{{1 -->
+	<tests>
+		<test>
+			<param name="isa" value="mzdata_study.zip" ftype="isa-tab"/>
+			<output_collection name="mzData" type="list" count="1">
+				<element name="empty" file="mzdata_study_output/empty.mzData" ftype="mzdata"/>
+			</output_collection>
+		</test>
+	</tests>
 
 	<!-- Help {{{1 -->
     <help>
