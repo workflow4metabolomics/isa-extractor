@@ -1,5 +1,5 @@
 <!-- vi: se fdm=marker : -->
-<tool id="isa2mzxml" name="ISA to mzXML" version="1.1.3">
+<tool id="isa2mzxml" name="ISA to mzXML" version="1.3.0">
 
 	<description>Extract mzXML files from an ISA dataset and output a collection of mzXML dataset.</description>
 
@@ -31,6 +31,14 @@
 	</outputs>
 
 	<!-- Tests {{{1 -->
+	<tests>
+		<test>
+			<param name="isa" value="mzxml_study.zip" ftype="isa-tab"/>
+			<output_collection name="mzXML" type="list" count="1">
+				<element name="empty" file="mzxml_study_output/empty.mzXML" ftype="mzxml"/>
+			</output_collection>
+		</test>
+	</tests>
 
 	<!-- Help {{{1 -->
     <help>
