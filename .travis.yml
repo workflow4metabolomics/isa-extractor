@@ -1,0 +1,11 @@
+dist: bionic
+
+notifications:
+ email:
+  recipients:
+   - pk.roger@icloud.com
+
+script:
+    - make test
+    - make plint
+    - make ptest
